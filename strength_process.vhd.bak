@@ -1,0 +1,28 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity strength_process is
+port(
+clk:			in std_logic;
+clr:			in std_logic;
+blk_w:		in std_logic_vector(2 downto 0);
+blk_h:		in std_logic_vector(2 downto 0);
+filterType:	in std_logic;
+delta:		in signed(7 downto 0);
+strength:	out unsigned(1 downto 0)
+);
+
+end strength_process;
+
+architecture behavioral of strength_process is
+signal	d: unsigned(7 downto 0);
+signal	blk_wh: std_logic_vector(5 downto 0);
+signal	temp_strength1, temp_strength2: unsigned(1 downto 0);
+begin
+blk_wh <= blk_w & blk_h;
+
+with filterType select
+	strength <=			temp_strength1 when '0',
+							temp_strength2 when '1';
+end behavioral;

@@ -1,0 +1,31 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity corner_filter is 
+port(
+	clk:			in std_logic;
+	clr: 			in std_logic;
+	corner:		in unsigned(7 downto 0);
+	x:				in unsigned(7 downto 0);
+	y:				in unsigned(7 downto 0);
+	s:				out unsigned(7 downto 0)
+);
+end corner_filter;
+architecture behavioral of corner_filter is
+signal s_temp: unsigned(15 downto 0);
+signal SLx_0,SLy_0: unsigned(8 downto 0);
+signal SLc_2: unsigned(10 downto 0);
+signal SLx_4,SLy_4,SLc_4: unsigned(12 downto 0);
+begin
+SLx_0 <= RESIZE(x,9);
+SLy_0 <= RESIZE(y,9);
+SLc_2 <= SHIFT_LEFT(RESIZE(corner,11),1);
+SLx_4 <= SHIFT_LEFT(RESIZE(x,13),2);
+SLy_4 <= SHIFT_LEFT(RESIZE(y,13),2);
+SLc_4 <= SHIFT_LEFT(RESIZE(corner,13),2);
+
+s_temp <= RESIZE(((SLy_0 + SLy_4) + (SLc_2 + SLc_4) + (SLx_0 + SLx_4)),16);
+s <=RESIZE(SHIFT_RIGHT(s_temp,4),8);
+
+end behavioral;
